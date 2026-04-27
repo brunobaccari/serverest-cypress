@@ -1,0 +1,33 @@
+{
+  "name": "serverest-challenge-cypress",
+  "version": "1.0.0",
+  "description": "Cypress E2E & API test suite for ServeRest — POM architecture with env-driven credentials",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:run:frontend": "cypress run --spec 'cypress/e2e/frontend/**'",
+    "cy:run:frontend:headed": "cypress run --browser chrome --headed --spec 'cypress/e2e/frontend/**'",
+    "cy:run:api": "cypress run --spec 'cypress/e2e/api/**'",
+    "cy:run:ci": "cypress run --browser chrome --headless",
+    "lint": "eslint \"cypress/**/*.js\""
+  },
+  "keywords": [
+    "cypress",
+    "e2e",
+    "api-testing",
+    "serverest",
+    "page-object-model"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "cypress": "^13.17.0",
+    "dotenv": "^16.4.7",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-cypress": "^3.6.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.3"
+  }
+}
