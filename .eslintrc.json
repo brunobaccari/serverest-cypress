@@ -1,0 +1,22 @@
+{
+  "env": {
+    "cypress/globals": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:cypress/recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "rules": {
+    "cypress/no-assigning-return-values": "error",
+    "cypress/no-unnecessary-waiting": "error",
+    "cypress/unsafe-to-chain-command": "warn",
+    "cypress/assertion-before-screenshot": "warn",
+    "cypress/no-force": "warn",
+    "cypress/no-async-tests": "error"
+  }
+}
