@@ -1,11 +1,11 @@
 /**
- * Classe base para todos os Page Objects.
- * Fornece métodos compartilhados de navegação, submissão e asserção
- * para eliminar duplicação entre as classes específicas de cada página.
+ * Base class for all Page Objects.
+ * Provides shared navigation, submission, and assertion methods
+ * to eliminate duplication across page-specific classes.
  */
 export default class BasePage {
   /**
-   * @param {string} path - O caminho da URL que esta página representa
+   * @param {string} path - The URL path this page represents
    */
   constructor(path) {
     this.path = path;
@@ -16,16 +16,16 @@ export default class BasePage {
   }
 
   /**
-   * Clica em um botão de submissão/ação pelo seletor.
-   * @param {string} selector - Seletor CSS do botão
+   * Clicks a submit/action button by selector.
+   * @param {string} selector - CSS selector for the button
    */
   submit(selector) {
     cy.get(selector).click();
   }
 
   /**
-   * Verifica se um alerta está visível e contém o texto esperado.
-   * @param {string} text - Texto esperado dentro do alerta
+   * Asserts that an alert is visible and contains the expected text.
+   * @param {string} text - Expected text inside the alert
    */
   assertAlert(text) {
     cy.get('.alert')
@@ -34,16 +34,16 @@ export default class BasePage {
   }
 
   /**
-   * Verifica se a URL atual contém um fragmento.
-   * @param {string} fragment - Substring da URL para verificar
+   * Asserts that the current URL contains a fragment.
+   * @param {string} fragment - URL substring to verify
    */
   assertUrl(fragment) {
     cy.url().should('include', fragment);
   }
 
   /**
-   * Verifica se múltiplas mensagens de validação obrigatória estão visíveis.
-   * @param {string[]} messages - Lista de mensagens de erro esperadas
+   * Asserts that multiple required validation messages are visible.
+   * @param {string[]} messages - List of expected error messages
    */
   assertValidationErrors(messages) {
     messages.forEach((msg) => {
@@ -51,5 +51,3 @@ export default class BasePage {
     });
   }
 }
-
-

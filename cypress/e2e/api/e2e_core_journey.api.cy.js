@@ -28,9 +28,9 @@ describe('Fluxos de Negócio via API', () => {
       const newUser = generateUserData(false);
 
       cy.request('POST', `${apiUrl}/usuarios`, newUser).then((res) => {
-        expect(res.status).to.eq(201);
-        expect(res.body.message).to.eq('Cadastro realizado com sucesso');
-        expect(res.body).to.have.property('_id').that.is.a('string');
+        expect(res.status, 'User creation should return 201').to.eq(201);
+        expect(res.body.message, 'Success message should confirm registration').to.eq('Cadastro realizado com sucesso');
+        expect(res.body, 'Response should include a user ID').to.have.property('_id').that.is.a('string');
         cy.wrap(res.body._id).as('createdUserId');
       });
 
@@ -38,14 +38,14 @@ describe('Fluxos de Negócio via API', () => {
         email: newUser.email,
         password: newUser.password
       }).then((res) => {
-        expect(res.status).to.eq(200);
-        expect(res.body.authorization).to.match(/^Bearer /);
+        expect(res.status, 'Login should return 200').to.eq(200);
+        expect(res.body.authorization, 'Token should follow Bearer format').to.match(/^Bearer /);
       });
 
       cy.get('@createdUserId').then((userId) => {
         cy.request('DELETE', `${apiUrl}/usuarios/${userId}`).then((res) => {
-          expect(res.status).to.eq(200);
-          expect(res.body.message).to.eq('Registro excluído com sucesso');
+          expect(res.status, 'User deletion should return 200').to.eq(200);
+          expect(res.body.message, 'Deletion message should confirm removal').to.eq('Registro excluído com sucesso');
         });
       });
     });
@@ -62,8 +62,8 @@ describe('Fluxos de Negócio via API', () => {
         body: newProduct,
         failOnStatusCode: false
       }).then((res) => {
-        expect(res.status).to.eq(401);
-        expect(res.body.message).to.eq(
+        expect(res.status, 'Invalid token should return 401').to.eq(401);
+        expect(res.body.message, 'Error message should describe invalid token').to.eq(
           'Token de acesso ausente, inválido, expirado ou usuário do token não existe mais'
         );
       });
@@ -78,9 +78,9 @@ describe('Fluxos de Negócio via API', () => {
         headers: { Authorization: authToken },
         body: newProduct
       }).then((res) => {
-        expect(res.status).to.eq(201);
-        expect(res.body.message).to.eq('Cadastro realizado com sucesso');
-        expect(res.body).to.have.property('_id').that.is.a('string');
+        expect(res.status, 'Product creation should return 201').to.eq(201);
+        expect(res.body.message, 'Success message should confirm registration').to.eq('Cadastro realizado com sucesso');
+        expect(res.body, 'Response should include a product ID').to.have.property('_id').that.is.a('string');
 
         cy.apiDeleteProduct(res.body._id, authToken);
       });
@@ -98,7 +98,7 @@ describe('Fluxos de Negócio via API', () => {
         headers: { Authorization: authToken },
         body: cartProduct
       }).then((res) => {
-        expect(res.status).to.eq(201);
+        expect(res.status, 'Cart product setup should return 201').to.eq(201);
         cartProductId = res.body._id;
       });
     });
@@ -120,9 +120,9 @@ describe('Fluxos de Negócio via API', () => {
           produtos: [{ idProduto: cartProductId, quantidade: 1 }]
         }
       }).then((res) => {
-        expect(res.status).to.eq(201);
-        expect(res.body.message).to.eq('Cadastro realizado com sucesso');
-        expect(res.body).to.have.property('_id').that.is.a('string');
+        expect(res.status, 'Cart creation should return 201').to.eq(201);
+        expect(res.body.message, 'Cart success message should confirm registration').to.eq('Cadastro realizado com sucesso');
+        expect(res.body, 'Cart response should include an ID').to.have.property('_id').that.is.a('string');
       });
 
       cy.request({
@@ -130,12 +130,12 @@ describe('Fluxos de Negócio via API', () => {
         url: `${apiUrl}/carrinhos/concluir-compra`,
         headers: { Authorization: authToken }
       }).then((res) => {
-        expect(res.status).to.eq(200);
-        expect(res.body.message).to.eq('Registro excluído com sucesso');
+        expect(res.status, 'Checkout should return 200').to.eq(200);
+        expect(res.body.message, 'Checkout message should confirm deletion').to.eq('Registro excluído com sucesso');
       });
 
       cy.request('GET', `${apiUrl}/produtos/${cartProductId}`).then((res) => {
-        expect(res.body.quantidade).to.eq(initialStock - 1);
+        expect(res.body.quantidade, 'Stock should be decremented by 1 after purchase').to.eq(initialStock - 1);
       });
     });
   });

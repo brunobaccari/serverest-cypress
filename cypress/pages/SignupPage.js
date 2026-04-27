@@ -7,20 +7,18 @@ class SignupPage extends BasePage {
   }
 
   /**
-   * Preenche o formulário de cadastro com os dados do usuário.
-   * @param {object} param0 - Dados do usuário
-   * @param {string} param0.nome - Nome completo
-   * @param {string} param0.email - Endereço de e-mail
-   * @param {string} param0.password - Senha
-   * @param {string} [param0.administrador='false'] - Flag de administrador
+   * Fills the signup form with user data.
+   * @param {object} param0 - User data
+   * @param {string} param0.nome - Full name
+   * @param {string} param0.email - Email address
+   * @param {string} param0.password - Password
+   * @param {string} [param0.administrador='false'] - Admin flag
    */
   fillForm({ nome, email, password, administrador = 'false' }) {
     cy.get(SELECTORS.INPUT_NAME).clear().type(nome);
     cy.get(SELECTORS.INPUT_EMAIL).clear().type(email);
     cy.get(SELECTORS.INPUT_PASSWORD).clear().type(password, { log: false });
-    if (administrador === 'true') {
-      cy.get(SELECTORS.CHECKBOX_ADMIN).check();
-    }
+    cy.get(SELECTORS.CHECKBOX_ADMIN)[administrador === 'true' ? 'check' : 'uncheck']();
   }
 
   submit() {
@@ -37,5 +35,3 @@ class SignupPage extends BasePage {
 }
 
 export default new SignupPage();
-
-

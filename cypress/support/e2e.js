@@ -1,8 +1,8 @@
 import './commands';
 
-// Oculta requisições fetch/XHR do log de comandos do Cypress para saída mais limpa.
-// Injeta uma regra CSS no frame do runner para esconder as entradas de request.
-// Guarda: aplica somente quando há acesso ao contexto do `window.top`.
+// Hide fetch/XHR requests from the Cypress command log for cleaner output.
+// Injects a CSS rule into the runner frame to hide request entries.
+// Guard: only applies when window.top context is available.
 if (window.top) {
   const app = window.top;
   if (!app.document.head.querySelector('[data-hide-command-log-request]')) {

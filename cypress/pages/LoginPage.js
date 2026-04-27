@@ -7,9 +7,9 @@ class LoginPage extends BasePage {
   }
 
   /**
-   * Preenche as credenciais de login no formulário.
-   * @param {string} email - E-mail do usuário
-   * @param {string} password - Senha do usuário
+   * Fills the login form with credentials.
+   * @param {string} email - User email
+   * @param {string} password - User password
    */
   fillCredentials(email, password) {
     cy.get(SELECTORS.INPUT_EMAIL).clear().type(email);
@@ -29,8 +29,8 @@ class LoginPage extends BasePage {
   }
 
   /**
-   * Verifica se uma mensagem de erro de login está visível.
-   * @param {string} message - Texto de erro esperado
+   * Asserts that a login error message is visible.
+   * @param {string} message - Expected error text
    */
   assertLoginError(message) {
     this.assertAlert(message);
@@ -38,5 +38,3 @@ class LoginPage extends BasePage {
 }
 
 export default new LoginPage();
-
-

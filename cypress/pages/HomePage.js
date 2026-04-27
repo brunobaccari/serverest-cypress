@@ -1,17 +1,22 @@
+import BasePage from './BasePage';
 import { HOME_SELECTORS as SELECTORS } from '../support/selectors/HomePageSelectors';
 
 /**
  * Page Object for the Home Dashboard.
  * Handles both Admin and Customer home views.
  */
-class HomePage {
+class HomePage extends BasePage {
+  constructor() {
+    super('/admin/home');
+  }
+
   assertIsVisible() {
-    cy.url().should('include', '/admin/home');
+    this.assertUrl('/admin/home');
     cy.get(SELECTORS.HEADING).should('be.visible');
   }
 
   assertIsCustomerHome() {
-    cy.url().should('include', '/home');
+    this.assertUrl('/home');
     cy.get(SELECTORS.SEARCH_INPUT).should('be.visible');
   }
 
@@ -32,7 +37,7 @@ class HomePage {
   }
 
   assertWelcomeMessage() {
-    cy.contains('Bem Vindo').should('be.visible');
+    cy.contains(SELECTORS.TEXT_WELCOME_MSG).should('be.visible');
   }
 
   assertAdminMenusHidden() {
@@ -46,14 +51,17 @@ class HomePage {
    * @param {object} user - The user object to verify
    * @param {string} user.nome - The name of the user
    * @param {string} user.email - The email of the user
+   * @param {string} user.password - The user password
+   * @param {string} user.administrador - Admin flag ('true'/'false')
    */
   verifyUserInTable(user) {
     cy.contains('tr', user.email)
       .should('be.visible')
       .within(() => {
-        cy.get('td').should('contain', user.nome);
-        cy.get('td').should('contain', user.email);
-        cy.get('td').eq(2).invoke('text').should('not.be.empty');
+        cy.get('td').eq(0).should('contain', user.nome);
+        cy.get('td').eq(1).should('contain', user.email);
+        cy.get('td').eq(2).should('contain', user.password);
+        cy.get('td').eq(3).should('contain', user.administrador);
       });
   }
 
@@ -62,18 +70,40 @@ class HomePage {
    * Scopes assertions within the matching table row for isolation.
    * @param {object} product - The product object to verify
    * @param {string} product.nome - The name of the product
+   * @param {number} product.preco - The product price
    * @param {string} product.descricao - The description of the product
+   * @param {number} product.quantidade - The product quantity
    */
   verifyProductInTable(product) {
     cy.contains('tr', product.nome)
       .should('be.visible')
       .within(() => {
-        cy.get('td').should('contain', product.nome);
-        cy.get('td').should('contain', product.descricao);
-
-        cy.get('td').eq(1).invoke('text').should('not.be.empty');
-        cy.get('td').eq(3).invoke('text').should('not.be.empty');
+        cy.get('td').eq(0).should('contain', product.nome);
+        cy.get('td').eq(1).should('contain', String(product.preco));
+        cy.get('td').eq(2).should('contain', product.descricao);
+        cy.get('td').eq(3).should('contain', String(product.quantidade));
+        cy.get('td').eq(4).invoke('text').should(
+          product.imagem ? 'contain' : 'be.empty',
+          ...(product.imagem ? ['fakepath'] : [])
+        );
       });
+  }
+  /**
+   * Deletes a product from the listing by clicking the Excluir button in its row.
+   * @param {string} productName - The product name to locate the row
+   */
+  deleteProductFromTable(productName) {
+    cy.contains('tr', productName)
+      .find('.btn-danger')
+      .click();
+  }
+
+  /**
+   * Verifies that a product name no longer appears in the listing.
+   * @param {string} productName - The product name that should be absent
+   */
+  verifyProductNotInTable(productName) {
+    cy.contains(productName).should('not.exist');
   }
 
   logout() {
@@ -82,5 +112,3 @@ class HomePage {
 }
 
 export default new HomePage();
-
-
