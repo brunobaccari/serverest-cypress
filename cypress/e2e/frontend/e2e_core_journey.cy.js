@@ -36,6 +36,24 @@ describe('Fluxos de Negócio Frontend — E2E', () => {
       cy.apiCleanupUser(adminUser.email);
     });
 
+    it('Então deve exibir erros de validação ao submeter login sem preencher os campos', () => {
+      cy.window().then((win) => win.localStorage.clear());
+      LoginPage.visit();
+      LoginPage.submit();
+      LoginPage.assertValidationErrors(['Email é obrigatório', 'Password é obrigatório']);
+    });
+
+    it('Então deve exibir erros de validação ao submeter cadastro sem preencher os campos', () => {
+      cy.window().then((win) => win.localStorage.clear());
+      SignupPage.visit();
+      SignupPage.submit();
+      SignupPage.assertValidationErrors([
+        'Nome é obrigatório',
+        'Email é obrigatório',
+        'Password é obrigatório'
+      ]);
+    });
+
     it('Então deve cadastrar um novo usuário com sucesso', () => {
       userToRegister = generateUserData(true);
       SignupPage.visit();
