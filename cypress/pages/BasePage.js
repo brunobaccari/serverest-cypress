@@ -40,6 +40,16 @@ export default class BasePage {
   assertUrl(fragment) {
     cy.url().should('include', fragment);
   }
+
+  /**
+   * Verifica se múltiplas mensagens de validação obrigatória estão visíveis.
+   * @param {string[]} messages - Lista de mensagens de erro esperadas
+   */
+  assertValidationErrors(messages) {
+    messages.forEach((msg) => {
+      cy.contains('.alert', msg).should('be.visible');
+    });
+  }
 }
 
 

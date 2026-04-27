@@ -88,28 +88,41 @@ describe('Fluxos de Negócio via API', () => {
   });
 
   describe('Cenário 3: Operações de Checkout de Carrinho', () => {
-    it('Então deve buscar um produto e finalizar uma compra via API', () => {
-      cy.request('GET', `${apiUrl}/produtos`).then((res) => {
-        expect(res.status).to.eq(200);
-        const product = res.body.produtos.find((p) => p.quantidade > 0);
-        expect(product, 'At least one product with stock > 0 must exist').to.not.be.undefined;
-        cy.wrap(product._id).as('productId');
-        cy.wrap(product.quantidade).as('initialStock');
-      });
+    const cartProduct = generateProductData();
+    let cartProductId;
 
-      cy.get('@productId').then((productId) => {
-        cy.request({
-          method: 'POST',
-          url: `${apiUrl}/carrinhos`,
-          headers: { Authorization: authToken },
-          body: {
-            produtos: [{ idProduto: productId, quantidade: 1 }]
-          }
-        }).then((res) => {
-          expect(res.status).to.eq(201);
-          expect(res.body.message).to.eq('Cadastro realizado com sucesso');
-          expect(res.body).to.have.property('_id').that.is.a('string');
-        });
+    before(() => {
+      cy.request({
+        method: 'POST',
+        url: `${apiUrl}/produtos`,
+        headers: { Authorization: authToken },
+        body: cartProduct
+      }).then((res) => {
+        expect(res.status).to.eq(201);
+        cartProductId = res.body._id;
+      });
+    });
+
+    after(() => {
+      if (cartProductId) {
+        cy.apiDeleteProduct(cartProductId, authToken);
+      }
+    });
+
+    it('Então deve criar um carrinho e finalizar uma compra via API', () => {
+      const initialStock = cartProduct.quantidade;
+
+      cy.request({
+        method: 'POST',
+        url: `${apiUrl}/carrinhos`,
+        headers: { Authorization: authToken },
+        body: {
+          produtos: [{ idProduto: cartProductId, quantidade: 1 }]
+        }
+      }).then((res) => {
+        expect(res.status).to.eq(201);
+        expect(res.body.message).to.eq('Cadastro realizado com sucesso');
+        expect(res.body).to.have.property('_id').that.is.a('string');
       });
 
       cy.request({
@@ -121,12 +134,8 @@ describe('Fluxos de Negócio via API', () => {
         expect(res.body.message).to.eq('Registro excluído com sucesso');
       });
 
-      cy.get('@productId').then((productId) => {
-        cy.get('@initialStock').then((initialStock) => {
-          cy.request('GET', `${apiUrl}/produtos/${productId}`).then((res) => {
-            expect(res.body.quantidade).to.eq(initialStock - 1);
-          });
-        });
+      cy.request('GET', `${apiUrl}/produtos/${cartProductId}`).then((res) => {
+        expect(res.body.quantidade).to.eq(initialStock - 1);
       });
     });
   });
