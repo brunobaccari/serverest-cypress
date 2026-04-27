@@ -10,9 +10,7 @@ class SignupPage extends BasePage {
     cy.get(SELECTORS.INPUT_NAME).clear().type(nome);
     cy.get(SELECTORS.INPUT_EMAIL).clear().type(email);
     cy.get(SELECTORS.INPUT_PASSWORD).clear().type(password, { log: false });
-    if (administrador === 'true') {
-      cy.get(SELECTORS.CHECKBOX_ADMIN).check();
-    }
+    cy.get(SELECTORS.CHECKBOX_ADMIN)[administrador === 'true' ? 'check' : 'uncheck']();
   }
 
   submit() {
@@ -29,5 +27,3 @@ class SignupPage extends BasePage {
 }
 
 export default new SignupPage();
-
-

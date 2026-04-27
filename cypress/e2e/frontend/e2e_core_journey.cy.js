@@ -54,6 +54,15 @@ describe('Fluxos de Negócio Frontend — E2E', () => {
       ]);
     });
 
+    it('Então deve exibir erro ao tentar login com credenciais inválidas', () => {
+      const fakeUser = generateUserData();
+      cy.window().then((win) => win.localStorage.clear());
+      LoginPage.visit();
+      LoginPage.fillCredentials(fakeUser.email, fakeUser.password);
+      LoginPage.submit();
+      LoginPage.assertValidationErrors(['Email e/ou senha inválidos']);
+    });
+
     it('Então deve cadastrar um novo usuário com sucesso', () => {
       userToRegister = generateUserData(true);
       SignupPage.visit();
@@ -61,7 +70,9 @@ describe('Fluxos de Negócio Frontend — E2E', () => {
       SignupPage.submit();
       SignupPage.assertSuccessMessage();
 
+      cy.url().should('include', '/admin/home');
       HomePage.assertWelcomeMessage();
+      cy.contains(userToRegister.nome).should('be.visible');
     });
 
     it('Então deve realizar login com sucesso usando credenciais válidas', () => {
@@ -81,7 +92,8 @@ describe('Fluxos de Negócio Frontend — E2E', () => {
   });
 
   describe('Cenário 2: Fluxo de Criação de Produto (Admin)', () => {
-    const newProduct = generateProductData();
+    const productWithoutImage = generateProductData();
+    const productWithImage = { ...generateProductData(), imagem: true };
 
     beforeEach(() => {
       cy.apiLogin(envEmail, envPassword);
@@ -89,28 +101,72 @@ describe('Fluxos de Negócio Frontend — E2E', () => {
     });
 
     afterEach(() => {
-      cy.apiCleanupProduct(newProduct.nome);
+      cy.apiCleanupProduct(productWithoutImage.nome);
+      cy.apiCleanupProduct(productWithImage.nome);
     });
 
-    it('Então deve criar um novo produto via dashboard admin', () => {
+    it('Então deve criar um produto sem imagem e verificar coluna vazia na listagem', () => {
       HomePage.assertIsVisible();
 
       cy.intercept('POST', '**/produtos').as('postProduto');
       HomePage.clickCreateProduct();
 
       ProductFormPage.assertOnCreatePage();
-      ProductFormPage.fillForm(newProduct);
+      ProductFormPage.fillForm(productWithoutImage);
       ProductFormPage.submit();
 
-      cy.wait('@postProduto').its('response.statusCode').should('eq', 201);
-      cy.screenshot('1-produto-criado-com-sucesso');
+      cy.wait('@postProduto')
+        .its('response.statusCode')
+        .should('eq', 201);
 
       HomePage.navigateToListProducts();
-
       cy.url().should('include', '/admin/listarprodutos');
-      cy.screenshot('2-produto-listado-com-sucesso');
+      HomePage.verifyProductInTable(productWithoutImage);
+    });
 
-      HomePage.verifyProductInTable(newProduct);
+    it('Então deve criar um produto com imagem e verificar fakepath na listagem', () => {
+      HomePage.assertIsVisible();
+
+      cy.intercept('POST', '**/produtos').as('postProduto');
+      HomePage.clickCreateProduct();
+
+      ProductFormPage.assertOnCreatePage();
+      ProductFormPage.fillForm(productWithImage);
+      ProductFormPage.submit();
+
+      cy.wait('@postProduto')
+        .its('response.statusCode')
+        .should('eq', 201);
+
+      HomePage.navigateToListProducts();
+      cy.url().should('include', '/admin/listarprodutos');
+      cy.screenshot('produto-com-imagem-listado');
+      HomePage.verifyProductInTable(productWithImage);
+    });
+
+    it('Então deve excluir um produto e verificar que não aparece mais na listagem', () => {
+      const productToDelete = generateProductData();
+
+      HomePage.assertIsVisible();
+
+      cy.intercept('POST', '**/produtos').as('postProduto');
+      HomePage.clickCreateProduct();
+
+      ProductFormPage.assertOnCreatePage();
+      ProductFormPage.fillForm(productToDelete);
+      ProductFormPage.submit();
+
+      cy.wait('@postProduto')
+        .its('response.statusCode')
+        .should('eq', 201);
+
+      HomePage.navigateToListProducts();
+      cy.url().should('include', '/admin/listarprodutos');
+      HomePage.verifyProductInTable(productToDelete);
+
+      HomePage.deleteProductFromTable(productToDelete.nome);
+
+      HomePage.verifyProductNotInTable(productToDelete.nome);
     });
   });
 
@@ -136,9 +192,9 @@ describe('Fluxos de Negócio Frontend — E2E', () => {
       UserFormPage.fillForm(newUser);
       UserFormPage.submit();
 
-      cy.wait('@postUsuario').its('response.statusCode').should('eq', 201);
-
-      HomePage.navigateToListUsers();
+      cy.wait('@postUsuario')
+        .its('response.statusCode')
+        .should('eq', 201);
 
       cy.url().should('include', '/admin/listarusuarios');
 

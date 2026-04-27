@@ -1,13 +1,18 @@
+import BasePage from './BasePage';
 import { HOME_SELECTORS as SELECTORS } from '../support/selectors/HomePageSelectors';
 
-class HomePage {
+class HomePage extends BasePage {
+  constructor() {
+    super('/admin/home');
+  }
+
   assertIsVisible() {
-    cy.url().should('include', '/admin/home');
+    this.assertUrl('/admin/home');
     cy.get(SELECTORS.HEADING).should('be.visible');
   }
 
   assertIsCustomerHome() {
-    cy.url().should('include', '/home');
+    this.assertUrl('/home');
     cy.get(SELECTORS.SEARCH_INPUT).should('be.visible');
   }
 
@@ -28,7 +33,7 @@ class HomePage {
   }
 
   assertWelcomeMessage() {
-    cy.contains('Bem Vindo').should('be.visible');
+    cy.contains(SELECTORS.TEXT_WELCOME_MSG).should('be.visible');
   }
 
   assertAdminMenusHidden() {
@@ -40,9 +45,10 @@ class HomePage {
     cy.contains('tr', user.email)
       .should('be.visible')
       .within(() => {
-        cy.get('td').should('contain', user.nome);
-        cy.get('td').should('contain', user.email);
-        cy.get('td').eq(2).invoke('text').should('not.be.empty');
+        cy.get('td').eq(0).should('contain', user.nome);
+        cy.get('td').eq(1).should('contain', user.email);
+        cy.get('td').eq(2).should('contain', user.password);
+        cy.get('td').eq(3).should('contain', user.administrador);
       });
   }
 
@@ -50,12 +56,24 @@ class HomePage {
     cy.contains('tr', product.nome)
       .should('be.visible')
       .within(() => {
-        cy.get('td').should('contain', product.nome);
-        cy.get('td').should('contain', product.descricao);
-
-        cy.get('td').eq(1).invoke('text').should('not.be.empty');
-        cy.get('td').eq(3).invoke('text').should('not.be.empty');
+        cy.get('td').eq(0).should('contain', product.nome);
+        cy.get('td').eq(1).should('contain', String(product.preco));
+        cy.get('td').eq(2).should('contain', product.descricao);
+        cy.get('td').eq(3).should('contain', String(product.quantidade));
+        cy.get('td').eq(4).invoke('text').should(
+          product.imagem ? 'contain' : 'be.empty',
+          ...(product.imagem ? ['fakepath'] : [])
+        );
       });
+  }
+  deleteProductFromTable(productName) {
+    cy.contains('tr', productName)
+      .find('.btn-danger')
+      .click();
+  }
+
+  verifyProductNotInTable(productName) {
+    cy.contains(productName).should('not.exist');
   }
 
   logout() {
@@ -64,5 +82,3 @@ class HomePage {
 }
 
 export default new HomePage();
-
-

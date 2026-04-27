@@ -9,7 +9,7 @@ export const generateUserData = (isAdmin = true) => ({
 
 export const generateProductData = () => ({
   nome: `Produto Teste ${faker.commerce.productName()} ${Date.now()}`,
-  preco: faker.commerce.price({ min: 10, max: 1000, dec: 0 }),
+  preco: Number(faker.commerce.price({ min: 10, max: 1000, dec: 0 })),
   descricao: faker.commerce.productDescription(),
   quantidade: faker.number.int({ min: 10, max: 100 }),
 });

@@ -6,11 +6,12 @@ class ProductFormPage extends BasePage {
     super('/admin/cadastrarprodutos');
   }
 
-  fillForm({ nome, preco, descricao, quantidade }) {
+  fillForm({ nome, preco, descricao, quantidade, imagem }) {
     cy.get(SELECTORS.INPUT_NAME).clear().type(nome);
     cy.get(SELECTORS.INPUT_PRICE).clear().type(String(preco));
     cy.get(SELECTORS.INPUT_DESC).clear().type(descricao);
     cy.get(SELECTORS.INPUT_QUANTITY).clear().type(String(quantidade));
+    imagem && cy.get(SELECTORS.INPUT_IMAGE).selectFile('public/banana.png');
   }
 
   submit() {
@@ -27,5 +28,3 @@ class ProductFormPage extends BasePage {
 }
 
 export default new ProductFormPage();
-
-

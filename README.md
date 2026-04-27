@@ -1,10 +1,13 @@
 # Automação E2E com Cypress — ServeRest
 
+[![Testes E2E e API](https://github.com/brunobaccari/serverest-challenge-cypress/actions/workflows/cypress.yml/badge.svg)](https://github.com/brunobaccari/serverest-challenge-cypress/actions/workflows/cypress.yml)
+
 Suíte de testes automatizados (E2E e API) para a plataforma ServeRest, cobrindo os fluxos de cadastro, login, gerenciamento de produtos e checkout de carrinho.
 
 **Ambientes Testados:**
 - **Frontend:** https://front.serverest.dev/
 - **Swagger API:** https://serverest.dev/
+
 ## Tecnologias
 
 - [Cypress](https://www.cypress.io/) v13
@@ -27,7 +30,7 @@ cypress/
 │   ├── ProductFormPage.js
 │   └── UserFormPage.js
 └── support/
-    ├── elements/             # Seletores CSS isolados
+    ├── selectors/            # Seletores CSS isolados
     ├── commands.js           # Comandos customizados
     ├── utils.js              # Geração de dados (Faker)
     └── index.d.ts            # Tipagem para IntelliSense

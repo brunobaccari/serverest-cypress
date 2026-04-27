@@ -31,12 +31,27 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
-      - name: Executar testes Cypress
+      - name: Verificar lint
+        run: npm run lint
+
+      - name: Executar testes de API
         # cypress-io/github-action@v7
         uses: cypress-io/github-action@dca986193e4336cb32820819b07e9ecacacaaaf6
         with:
-          browser: chrome
+          spec: cypress/e2e/api/**
           install: false
+          summary-title: 'Testes de API'
+        env:
+          USER_EMAIL: ${{ secrets.USER_EMAIL }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+
+      - name: Executar testes E2E Frontend
+        # cypress-io/github-action@v7
+        uses: cypress-io/github-action@dca986193e4336cb32820819b07e9ecacacaaaf6
+        with:
+          spec: cypress/e2e/frontend/**
+          install: false
+          summary-title: 'Testes E2E Frontend'
         env:
           USER_EMAIL: ${{ secrets.USER_EMAIL }}
           USER_PASSWORD: ${{ secrets.USER_PASSWORD }}

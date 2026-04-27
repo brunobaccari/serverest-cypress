@@ -3,6 +3,7 @@ export const PRODUCT_FORM_SELECTORS = {
   INPUT_PRICE: '[data-testid="preco"]',
   INPUT_DESC: '[data-testid="descricao"]',
   INPUT_QUANTITY: '[data-testid="quantity"]',
+  INPUT_IMAGE: '[data-testid="imagem"]',
   BTN_SUBMIT: '[data-testid="cadastarProdutos"]',
   ALERT: '.alert'
 };
