@@ -12,9 +12,13 @@ concurrency:
   cancel-in-progress: true
 
 
+permissions:
+  contents: read
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Baixar código fonte
@@ -33,7 +37,7 @@ jobs:
         # actions/setup-node@v6
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
-          node-version: 18
+          node-version: 24
           cache: 'npm'
 
       - name: Instalar dependências
@@ -53,8 +57,6 @@ jobs:
         env:
           CYPRESS_VIDEOS_FOLDER: cypress/videos/api
           CYPRESS_SCREENSHOTS_FOLDER: cypress/screenshots/api
-          USER_EMAIL: ${{ secrets.USER_EMAIL }}
-          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
 
       - name: Executar testes E2E Frontend
         # cypress-io/github-action@v7
@@ -67,8 +69,6 @@ jobs:
         env:
           CYPRESS_VIDEOS_FOLDER: cypress/videos/frontend
           CYPRESS_SCREENSHOTS_FOLDER: cypress/screenshots/frontend
-          USER_EMAIL: ${{ secrets.USER_EMAIL }}
-          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
 
       - name: Salvar resultados JUnit
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
