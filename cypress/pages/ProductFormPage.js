@@ -7,10 +7,14 @@ class ProductFormPage extends BasePage {
   }
 
   fillForm({ nome, preco, descricao, quantidade, imagem }) {
-    cy.get(SELECTORS.INPUT_NAME).clear().type(nome);
-    cy.get(SELECTORS.INPUT_PRICE).clear().type(String(preco));
-    cy.get(SELECTORS.INPUT_DESC).clear().type(descricao);
-    cy.get(SELECTORS.INPUT_QUANTITY).clear().type(String(quantidade));
+    cy.get(SELECTORS.INPUT_NAME).clear();
+    cy.get(SELECTORS.INPUT_NAME).type(nome);
+    cy.get(SELECTORS.INPUT_PRICE).clear();
+    cy.get(SELECTORS.INPUT_PRICE).type(String(preco));
+    cy.get(SELECTORS.INPUT_DESC).clear();
+    cy.get(SELECTORS.INPUT_DESC).type(descricao);
+    cy.get(SELECTORS.INPUT_QUANTITY).clear();
+    cy.get(SELECTORS.INPUT_QUANTITY).type(String(quantidade));
     imagem && cy.get(SELECTORS.INPUT_IMAGE).selectFile('public/banana.png');
   }
 

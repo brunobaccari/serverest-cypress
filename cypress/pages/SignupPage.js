@@ -7,9 +7,12 @@ class SignupPage extends BasePage {
   }
 
   fillForm({ nome, email, password, administrador = 'false' }) {
-    cy.get(SELECTORS.INPUT_NAME).clear().type(nome);
-    cy.get(SELECTORS.INPUT_EMAIL).clear().type(email);
-    cy.get(SELECTORS.INPUT_PASSWORD).clear().type(password, { log: false });
+    cy.get(SELECTORS.INPUT_NAME).clear();
+    cy.get(SELECTORS.INPUT_NAME).type(nome);
+    cy.get(SELECTORS.INPUT_EMAIL).clear();
+    cy.get(SELECTORS.INPUT_EMAIL).type(email);
+    cy.get(SELECTORS.INPUT_PASSWORD).clear();
+    cy.get(SELECTORS.INPUT_PASSWORD).type(password, { log: false });
     cy.get(SELECTORS.CHECKBOX_ADMIN)[administrador === 'true' ? 'check' : 'uncheck']();
   }
 

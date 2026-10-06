@@ -11,9 +11,12 @@ class UserFormPage extends BasePage {
   }
 
   fillForm(user) {
-    cy.get(SELECTORS.INPUT_NAME).clear().type(user.nome);
-    cy.get(SELECTORS.INPUT_EMAIL).clear().type(user.email);
-    cy.get(SELECTORS.INPUT_PASSWORD).clear().type(user.password, { log: false });
+    cy.get(SELECTORS.INPUT_NAME).clear();
+    cy.get(SELECTORS.INPUT_NAME).type(user.nome);
+    cy.get(SELECTORS.INPUT_EMAIL).clear();
+    cy.get(SELECTORS.INPUT_EMAIL).type(user.email);
+    cy.get(SELECTORS.INPUT_PASSWORD).clear();
+    cy.get(SELECTORS.INPUT_PASSWORD).type(user.password, { log: false });
     cy.get(SELECTORS.CHECKBOX_ADMIN)[user.administrador === 'true' ? 'check' : 'uncheck']();
   }
 
