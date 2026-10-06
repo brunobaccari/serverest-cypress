@@ -22,7 +22,7 @@ cp .env.example .env
 npm run cy:open
 ```
 
-Preencha `.env` com uma conta de teste do ServeRest: `USER_NAME`, `USER_EMAIL`, `USER_PASSWORD` e `USER_ADMIN`. No PowerShell, use `Copy-Item .env.example .env`. Não use credenciais pessoais.
+Cada spec cria uma conta admin exclusiva e remove seus próprios usuários, produtos e carrinho no teardown. Não precisa de conta prévia nem secrets no CI. Execute somente no ambiente público de demonstração.
 
 | Comando | Execução |
 | --- | --- |
@@ -34,8 +34,6 @@ Preencha `.env` com uma conta de teste do ServeRest: `USER_NAME`, `USER_EMAIL`, 
 
 ## Ambiente e CI
 
-O projeto usa Cypress 13 e Faker 10. `.nvmrc` e o workflow ainda usam Node 18, enquanto o Faker declara Node 20.19, 22.13, 23.5 ou 24+. Esse alinhamento de versões permanece pendente; as dependências foram preservadas. A [validação dos outputs](https://github.com/brunobaccari/serverest-cypress/actions/runs/37475395660) passou nos 13 testes e teve XMLs e vídeos conferidos por download.
-
-O workflow `.github/workflows/cypress.yml` instala dependências, executa lint, API e frontend e coleta artefatos. As credenciais do CI vêm dos secrets `USER_EMAIL` e `USER_PASSWORD`. A configuração permite duas novas tentativas no modo de execução.
+Cypress 13 e Faker 10 executam com Node 24. O workflow instala dependências pelo lockfile com `npm ci`, executa lint, API e frontend e coleta artifacts. Dados exclusivos isolam o estado; o teardown remove somente registros criados pela spec. Processo interrompido ou API indisponível pode impedir a limpeza. O modo de execução mantém duas tentativas adicionais; confira as tentativas ao investigar instabilidade.
 
 Na aba **Actions**, abra uma execução: o **Summary** mostra API e frontend, e **Artifacts** oferece `cypress-results` (JUnit por spec), `cypress-videos` e screenshots quando houver falhas. Vídeos e screenshots usam pastas separadas por camada; os artifacts ficam disponíveis por 14 dias. O [reporter JUnit nativo do Cypress](https://docs.cypress.io/app/tooling/reporters) usa `[hash]` para não sobrescrever o XML de outra spec.

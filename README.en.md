@@ -22,7 +22,7 @@ cp .env.example .env
 npm run cy:open
 ```
 
-Set `USER_NAME`, `USER_EMAIL`, `USER_PASSWORD` and `USER_ADMIN` in `.env` for a ServeRest test account. In PowerShell, use `Copy-Item .env.example .env`. Do not use personal credentials.
+Each spec creates a unique admin account and removes its own users, products and cart in teardown. No pre-existing account or CI credential is required. Run against the public demo only.
 
 | Command | Execution |
 | --- | --- |
@@ -34,8 +34,6 @@ Set `USER_NAME`, `USER_EMAIL`, `USER_PASSWORD` and `USER_ADMIN` in `.env` for a 
 
 ## Environment and CI
 
-This project uses Cypress 13 and Faker 10. `.nvmrc` and the workflow still use Node 18, while Faker declares Node 20.19, 22.13, 23.5 or 24+. Aligning those versions remains pending; dependencies were preserved. The [output validation run](https://github.com/brunobaccari/serverest-cypress/actions/runs/37475395660) passed all 13 tests, and its XML reports and videos were downloaded and inspected.
-
-The `.github/workflows/cypress.yml` workflow installs dependencies, runs lint, API and frontend tests, and collects artifacts. CI credentials come from `USER_EMAIL` and `USER_PASSWORD` secrets. Run mode allows two retries.
+Cypress 13 and Faker 10 run on Node 24. The workflow installs pinned dependencies with `npm ci`, runs lint, API and frontend tests, and collects artifacts. State is isolated by unique data; teardown removes only records created by this spec. A killed process or unavailable API can prevent cleanup. Run mode currently allows two retries; inspect attempts when investigating instability.
 
 Open a run under **Actions**: its **Summary** shows API and frontend results, and **Artifacts** provides `cypress-results` (JUnit per spec), `cypress-videos` and screenshots when tests fail. Videos and screenshots use separate folders for each layer; artifacts are retained for 14 days. The [built-in Cypress JUnit reporter](https://docs.cypress.io/app/tooling/reporters) uses `[hash]` to avoid overwriting another spec's XML.
