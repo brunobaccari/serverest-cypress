@@ -104,6 +104,7 @@ describe('Fluxos de Negócio via API', () => {
     });
 
     after(() => {
+      cy.request({ method: 'DELETE', url: `${apiUrl}/carrinhos/cancelar-compra`, headers: { Authorization: authToken }, log: false }).its('status').should('eq', 200);
       if (cartProductId) {
         cy.apiDeleteProduct(cartProductId, authToken);
       }

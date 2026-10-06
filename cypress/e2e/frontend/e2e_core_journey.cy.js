@@ -17,12 +17,7 @@ describe('Fluxos de Negócio Frontend — E2E', () => {
   describe('Cenário 1: Fluxos de Cadastro e Login', () => {
     let userToRegister;
 
-    const adminUser = {
-      nome: 'Admin QA Test',
-      email: 'admin.core.qa@serverest.dev',
-      password: 'teste',
-      administrador: 'true'
-    };
+    const adminUser = generateUserData(true);
 
     beforeEach(() => {
       cy.apiLogin(envEmail, envPassword);

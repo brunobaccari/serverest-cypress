@@ -10,10 +10,6 @@ module.exports = defineConfig({
     baseUrl: 'https://front.serverest.dev',
     env: {
       apiUrl: 'https://serverest.dev',
-      userName: process.env.USER_NAME || 'Test User',
-      userEmail: process.env.USER_EMAIL || '',
-      userPassword: process.env.USER_PASSWORD || '',
-      userAdmin: process.env.USER_ADMIN || 'true',
     },
     viewportWidth: 1280,
     viewportHeight: 720,

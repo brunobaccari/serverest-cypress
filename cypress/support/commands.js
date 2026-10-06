@@ -5,12 +5,14 @@ Cypress.Commands.add('getApiToken', (email, password) => {
     method: 'POST',
     url: loginUrl,
     body: { email, password },
+    log: false,
     failOnStatusCode: false
   }).then((response) => {
     if (response.status !== 200) {
       throw new Error(`Failed to authenticate in getApiToken: ${JSON.stringify(response.body)}`);
     }
-    return cy.wrap(response.body.authorization);
+    expect(response.body.authorization).to.match(/^Bearer /);
+    return cy.wrap(response.body.authorization, { log: false });
   });
 });
 
@@ -53,6 +55,7 @@ Cypress.Commands.add('apiCreateUser', (userData) => {
     method: 'POST',
     url: `${Cypress.env('apiUrl')}/usuarios`,
     body: userData,
+    log: false,
     failOnStatusCode: false
   }).then((response) => {
     if (response.status === 400 && response.body && response.body.message === 'Este email já está sendo usado') {
