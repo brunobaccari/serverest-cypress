@@ -34,7 +34,7 @@ Set `USER_NAME`, `USER_EMAIL`, `USER_PASSWORD` and `USER_ADMIN` in `.env` for a 
 
 ## Environment and CI
 
-This project uses Cypress 13 and Faker 10. The historical Node 18 configuration in `.nvmrc` and the workflow needs to be aligned with Faker 10 requirements before reproducing the environment. This README review did not update dependencies or rerun the suite.
+This project uses Cypress 13 and Faker 10. `.nvmrc` and the workflow still use Node 18, while Faker declares Node 20.19, 22.13, 23.5 or 24+. Aligning those versions remains pending; dependencies were preserved. The [output validation run](https://github.com/brunobaccari/serverest-cypress/actions/runs/37475395660) passed all 13 tests, and its XML reports and videos were downloaded and inspected.
 
 The `.github/workflows/cypress.yml` workflow installs dependencies, runs lint, API and frontend tests, and collects artifacts. CI credentials come from `USER_EMAIL` and `USER_PASSWORD` secrets. Run mode allows two retries.
 

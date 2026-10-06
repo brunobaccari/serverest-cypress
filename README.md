@@ -34,7 +34,7 @@ Preencha `.env` com uma conta de teste do ServeRest: `USER_NAME`, `USER_EMAIL`, 
 
 ## Ambiente e CI
 
-O projeto usa Cypress 13 e Faker 10. A configuração histórica de Node 18 em `.nvmrc` e no workflow precisa ser alinhada ao requisito do Faker 10 antes de reproduzir o ambiente. Essa revisão dos READMEs não atualizou dependências nem reexecutou a suíte.
+O projeto usa Cypress 13 e Faker 10. `.nvmrc` e o workflow ainda usam Node 18, enquanto o Faker declara Node 20.19, 22.13, 23.5 ou 24+. Esse alinhamento de versões permanece pendente; as dependências foram preservadas. A [validação dos outputs](https://github.com/brunobaccari/serverest-cypress/actions/runs/37475395660) passou nos 13 testes e teve XMLs e vídeos conferidos por download.
 
 O workflow `.github/workflows/cypress.yml` instala dependências, executa lint, API e frontend e coleta artefatos. As credenciais do CI vêm dos secrets `USER_EMAIL` e `USER_PASSWORD`. A configuração permite duas novas tentativas no modo de execução.
 
