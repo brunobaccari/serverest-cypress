@@ -37,3 +37,5 @@ Preencha `.env` com uma conta de teste do ServeRest: `USER_NAME`, `USER_EMAIL`, 
 O projeto usa Cypress 13 e Faker 10. A configuração histórica de Node 18 em `.nvmrc` e no workflow precisa ser alinhada ao requisito do Faker 10 antes de reproduzir o ambiente. Essa revisão dos READMEs não atualizou dependências nem reexecutou a suíte.
 
 O workflow `.github/workflows/cypress.yml` instala dependências, executa lint, API e frontend e coleta artefatos. As credenciais do CI vêm dos secrets `USER_EMAIL` e `USER_PASSWORD`. A configuração permite duas novas tentativas no modo de execução.
+
+Na aba **Actions**, abra uma execução: o **Summary** mostra API e frontend, e **Artifacts** oferece `cypress-results` (JUnit por spec), `cypress-videos` e screenshots quando houver falhas. Vídeos e screenshots usam pastas separadas por camada; os artifacts ficam disponíveis por 14 dias. O [reporter JUnit nativo do Cypress](https://docs.cypress.io/app/tooling/reporters) usa `[hash]` para não sobrescrever o XML de outra spec.

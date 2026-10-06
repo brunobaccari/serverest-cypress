@@ -37,3 +37,5 @@ Set `USER_NAME`, `USER_EMAIL`, `USER_PASSWORD` and `USER_ADMIN` in `.env` for a 
 This project uses Cypress 13 and Faker 10. The historical Node 18 configuration in `.nvmrc` and the workflow needs to be aligned with Faker 10 requirements before reproducing the environment. This README review did not update dependencies or rerun the suite.
 
 The `.github/workflows/cypress.yml` workflow installs dependencies, runs lint, API and frontend tests, and collects artifacts. CI credentials come from `USER_EMAIL` and `USER_PASSWORD` secrets. Run mode allows two retries.
+
+Open a run under **Actions**: its **Summary** shows API and frontend results, and **Artifacts** provides `cypress-results` (JUnit per spec), `cypress-videos` and screenshots when tests fail. Videos and screenshots use separate folders for each layer; artifacts are retained for 14 days. The [built-in Cypress JUnit reporter](https://docs.cypress.io/app/tooling/reporters) uses `[hash]` to avoid overwriting another spec's XML.

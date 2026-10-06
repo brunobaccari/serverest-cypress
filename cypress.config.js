@@ -2,6 +2,10 @@ require('dotenv').config();
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
+  reporter: 'junit',
+  reporterOptions: {
+    mochaFile: 'results/junit-[hash].xml',
+  },
   e2e: {
     baseUrl: 'https://front.serverest.dev',
     env: {

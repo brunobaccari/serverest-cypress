@@ -41,7 +41,10 @@ jobs:
           spec: cypress/e2e/api/**
           install: false
           summary-title: 'Testes de API'
+          publish-summary: true
         env:
+          CYPRESS_VIDEOS_FOLDER: cypress/videos/api
+          CYPRESS_SCREENSHOTS_FOLDER: cypress/screenshots/api
           USER_EMAIL: ${{ secrets.USER_EMAIL }}
           USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
 
@@ -52,9 +55,21 @@ jobs:
           spec: cypress/e2e/frontend/**
           install: false
           summary-title: 'Testes E2E Frontend'
+          publish-summary: true
         env:
+          CYPRESS_VIDEOS_FOLDER: cypress/videos/frontend
+          CYPRESS_SCREENSHOTS_FOLDER: cypress/screenshots/frontend
           USER_EMAIL: ${{ secrets.USER_EMAIL }}
           USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+
+      - name: Salvar resultados JUnit
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: cypress-results
+          path: results/*.xml
+          retention-days: 14
+          if-no-files-found: warn
 
       - name: Salvar screenshots em caso de falha
         # actions/upload-artifact@v7
@@ -63,6 +78,7 @@ jobs:
         with:
           name: cypress-screenshots
           path: cypress/screenshots
+          retention-days: 14
           if-no-files-found: ignore
 
       - name: Salvar vídeos de execução
@@ -72,4 +88,5 @@ jobs:
         with:
           name: cypress-videos
           path: cypress/videos
+          retention-days: 14
           if-no-files-found: ignore
