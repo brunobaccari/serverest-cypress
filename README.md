@@ -1,56 +1,39 @@
-# Automação E2E com Cypress — ServeRest
+# Cypress · ServeRest
 
-[![Testes E2E e API](https://github.com/brunobaccari/serverest-challenge-cypress/actions/workflows/cypress.yml/badge.svg)](https://github.com/brunobaccari/serverest-challenge-cypress/actions/workflows/cypress.yml)
+[English version](README.en.md)
 
-Suíte de testes automatizados (E2E e API) para a plataforma ServeRest, cobrindo os fluxos de cadastro, login, gerenciamento de produtos e checkout de carrinho.
+Testes de frontend e API do [ServeRest](https://serverest.dev/), com Page Objects, comandos compartilhados e dados gerados com Faker.
 
-**Ambientes Testados:**
-- **Frontend:** https://front.serverest.dev/
-- **Swagger API:** https://serverest.dev/
+## Cobertura
 
-## Tecnologias
+- Login, validação de formulários e cadastro de usuários.
+- Cadastro e exclusão de produtos pelo frontend.
+- Autenticação, usuários, produtos e jornada de carrinho pela API.
 
-- [Cypress](https://www.cypress.io/) v13
-- [Faker.js](https://fakerjs.dev/) para dados dinâmicos
-- ESLint + Prettier
-- GitHub Actions (CI)
+Os testes ficam em `cypress/e2e/frontend` e `cypress/e2e/api`; páginas e seletores ficam em `cypress/pages` e `cypress/support`.
 
-## Estrutura do Projeto
+## Executar
 
-```
-cypress/
-├── e2e/
-│   ├── api/                  # Testes de API
-│   └── frontend/             # Testes E2E de interface
-├── pages/                    # Page Objects (POM)
-│   ├── BasePage.js           # Classe base
-│   ├── HomePage.js
-│   ├── LoginPage.js
-│   ├── SignupPage.js
-│   ├── ProductFormPage.js
-│   └── UserFormPage.js
-└── support/
-    ├── selectors/            # Seletores CSS isolados
-    ├── commands.js           # Comandos customizados
-    ├── utils.js              # Geração de dados (Faker)
-    └── index.d.ts            # Tipagem para IntelliSense
-```
-
-## Como Executar
-
-```bash
-# Clonar e instalar
-git clone https://github.com/brunobaccari/serverest-challenge-cypress.git
-cd serverest-challenge-cypress
-npm install
-
-# Configurar credenciais
+```sh
+git clone https://github.com/brunobaccari/serverest-cypress.git
+cd serverest-cypress
+npm ci
 cp .env.example .env
-# Editar o .env com suas credenciais
-
-# Executar
-npm run cy:open              # Modo interativo
-npm run cy:run:frontend      # Testes de frontend (headless)
-npm run cy:run:api           # Testes de API (headless)
-npm run cy:run:ci            # Suíte completa (CI)
+npm run cy:open
 ```
+
+Preencha `.env` com uma conta de teste do ServeRest: `USER_NAME`, `USER_EMAIL`, `USER_PASSWORD` e `USER_ADMIN`. No PowerShell, use `Copy-Item .env.example .env`. Não use credenciais pessoais.
+
+| Comando | Execução |
+| --- | --- |
+| `npm run cy:run:api` | API |
+| `npm run cy:run:frontend` | Frontend |
+| `npm run cy:run:frontend:headed` | Frontend no Chrome visível |
+| `npm run cy:run:ci` | Suíte no Chrome headless |
+| `npm run lint` | Análise estática |
+
+## Ambiente e CI
+
+O projeto usa Cypress 13 e Faker 10. A configuração histórica de Node 18 em `.nvmrc` e no workflow precisa ser alinhada ao requisito do Faker 10 antes de reproduzir o ambiente. Essa revisão dos READMEs não atualizou dependências nem reexecutou a suíte.
+
+O workflow `.github/workflows/cypress.yml` instala dependências, executa lint, API e frontend e coleta artefatos. As credenciais do CI vêm dos secrets `USER_EMAIL` e `USER_PASSWORD`. A configuração permite duas novas tentativas no modo de execução.
