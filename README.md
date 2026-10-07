@@ -37,3 +37,7 @@ Cada spec cria uma conta admin exclusiva e remove seus próprios usuários, prod
 Cypress 13 e Faker 10 executam com Node 24. O workflow instala dependências pelo lockfile com `npm ci`, executa lint, API e frontend e coleta artifacts. Dados exclusivos isolam o estado; o teardown remove somente registros criados pela spec. Processo interrompido ou API indisponível pode impedir a limpeza. O modo de execução mantém duas tentativas adicionais; confira as tentativas ao investigar instabilidade.
 
 Na aba **Actions**, abra uma execução: o **Summary** mostra API e frontend, e **Artifacts** oferece `cypress-results` (JUnit por spec), `cypress-videos` e screenshots quando houver falhas. Vídeos e screenshots usam pastas separadas por camada; os artifacts ficam disponíveis por 14 dias. O [reporter JUnit nativo do Cypress](https://docs.cypress.io/app/tooling/reporters) usa `[hash]` para não sobrescrever o XML de outra spec.
+
+O summary do Actions lista cada cenário, duração, totais e motivo de bloqueio. O gate exige a quantidade prevista no workflow, sem falhas ou skips; JUnit ausente ou inválido reprova. O resumo também acompanha o artifact.
+
+Screenshots do estado final também são capturados nos testes de interface aprovados e ficam nos artifacts, fora do Git.

@@ -25,6 +25,8 @@ jobs:
         # actions/checkout@v6
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
+      - name: Verificar parser e gate do summary
+        run: python3 scripts/summary.py --self-test
       - name: Verificar arquivos versionados
         shell: bash
         run: |
@@ -47,6 +49,7 @@ jobs:
         run: npm run lint
 
       - name: Executar testes de API
+        id: api
         # cypress-io/github-action@v7
         uses: cypress-io/github-action@dca986193e4336cb32820819b07e9ecacacaaaf6
         with:
@@ -59,6 +62,7 @@ jobs:
           CYPRESS_SCREENSHOTS_FOLDER: cypress/screenshots/api
 
       - name: Executar testes E2E Frontend
+        id: frontend
         # cypress-io/github-action@v7
         uses: cypress-io/github-action@dca986193e4336cb32820819b07e9ecacacaaaf6
         with:
@@ -70,19 +74,29 @@ jobs:
           CYPRESS_VIDEOS_FOLDER: cypress/videos/frontend
           CYPRESS_SCREENSHOTS_FOLDER: cypress/screenshots/frontend
 
+      - name: Resumo dos testes e completude
+        if: always()
+        env:
+          TEST_OUTCOME: ${{ steps.api.outcome == 'success' && steps.frontend.outcome == 'success' && 'success' || 'failure' }}
+          EXPECTED_TESTS: '13'
+          JUNIT_PATTERN: 'results/*.xml'
+          SUMMARY_FILE: 'results/summary.md'
+          TEST_SCOPE: 'Cypress / ServeRest hospedado. API e frontend; screenshots apenas de interface.'
+        run: python3 scripts/summary.py
       - name: Salvar resultados JUnit
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        id: artifact
         if: always()
         with:
           name: cypress-results
-          path: results/*.xml
+          path: results/
           retention-days: 14
-          if-no-files-found: warn
+          if-no-files-found: error
 
-      - name: Salvar screenshots em caso de falha
+      - name: Salvar screenshots de interface
         # actions/upload-artifact@v7
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        if: failure()
+        if: always()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
@@ -98,3 +112,13 @@ jobs:
           path: cypress/videos
           retention-days: 14
           if-no-files-found: ignore
+      - name: Link dos resultados
+        if: always()
+        env:
+          ARTIFACT_URL: ${{ steps.artifact.outputs.artifact-url }}
+        run: |
+          if [ -n "$ARTIFACT_URL" ]; then
+            printf '\n[Baixar relatórios e evidências](%s)\n' "$ARTIFACT_URL" >> "$GITHUB_STEP_SUMMARY"
+          else
+            printf '\nArtifact indisponível; confira a etapa de upload.\n' >> "$GITHUB_STEP_SUMMARY"
+          fi
