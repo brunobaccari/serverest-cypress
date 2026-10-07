@@ -12,7 +12,9 @@
     "cy:run:frontend:headed": "cypress run --browser chrome --headed --spec 'cypress/e2e/frontend/**'",
     "cy:run:api": "cypress run --spec 'cypress/e2e/api/**'",
     "cy:run:ci": "cypress run --browser chrome --headless",
-    "lint": "eslint \"cypress/**/*.js\""
+    "lint": "eslint \"cypress/**/*.js\"",
+    "prepare": "husky",
+    "check:local": "git diff --cached --check && python scripts/summary.py --self-test && npm run lint"
   },
   "keywords": [
     "cypress",
@@ -31,6 +33,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-cypress": "^3.6.0",
     "eslint-plugin-prettier": "^5.5.5",
-    "prettier": "^3.8.3"
+    "prettier": "^3.8.3",
+    "husky": "9.1.7"
   }
 }
